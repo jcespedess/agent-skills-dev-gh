@@ -1,8 +1,13 @@
 {
   "mcpServers": {
     "engram": {
-      "command": "/opt/homebrew/bin/engram",
+      "command": "C:/Users/jcesp/go/bin/engram.exe",
       "args": ["mcp", "--tools=agent"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {}
     }
   }
 }

@@ -1,6 +1,6 @@
 ---
 name: source-driven-development
-description: Grounds every implementation decision in official documentation. Use when you want authoritative, source-cited code free from outdated patterns. Use when building with any framework or library where correctness matters.
+description: Grounds every implementation decision in official documentation via Context7 (preferred) or WebFetch. Use when you want authoritative, source-cited code free from outdated patterns. Use when building with any framework or library where correctness matters.
 ---
 
 # Source-Driven Development
@@ -30,9 +30,9 @@ Every framework-specific code decision must be backed by official documentation.
 DETECT ──→ FETCH ──→ IMPLEMENT ──→ CITE
   │          │           │            │
   ▼          ▼           ▼            ▼
- What       Get the    Follow the   Show your
- stack?     relevant   documented   sources
-            docs       patterns
+ What     Context7   Follow the   Show your
+ stack?   or WebFetch documented   sources
+          (fallback)  patterns
 ```
 
 ### Step 1: Detect Stack and Versions
@@ -62,7 +62,42 @@ If versions are missing or ambiguous, **ask the user**. Don't guess — the vers
 
 ### Step 2: Fetch Official Documentation
 
-Fetch the specific documentation page for the feature you're implementing. Not the homepage, not the full docs — the relevant page.
+Fetch the specific documentation for the API or feature you're implementing. Not the homepage, not the full docs — the relevant page or section.
+
+#### Option A — Context7 (preferred when available)
+
+Context7 (`@upstash/context7-mcp`) pulls live, version-pinned documentation directly into the agent context. Use it before writing any framework-specific code:
+
+```
+use context7
+
+¿Cómo se usa useActionState en React 19?
+¿Cuál es la API actual de FastAPI Depends en 0.115.x?
+¿Cómo definir middleware en Fiber v3?
+¿Cuál es la diferencia de fiber.Ctx entre v2 y v3?
+¿Cómo usar SequentialAgent en Google ADK 2.0?
+¿Cuál es la API de @Transactional en Spring Boot 3.5?
+```
+
+Context7 resolves the library version from the project's dependency file and returns the matching documentation — no URL needed, no stale training data.
+
+**Setup (MCP):**
+
+```json
+{
+  "context7": {
+    "command": "npx",
+    "args": ["-y", "@upstash/context7-mcp"],
+    "env": {}
+  }
+}
+```
+
+Add to `.cursor/mcp.json` (Cursor) or Claude Code MCP settings. If not available, a `WARN` is emitted — this is not a `FAIL` (see gate-check).
+
+#### Option B — WebFetch (fallback when Context7 is not available)
+
+Fetch the specific documentation page for the feature you're implementing.
 
 **Source hierarchy (in order of authority):**
 
@@ -90,7 +125,9 @@ BAD:  Search "django authentication best practices"
 GOOD: Fetch docs.djangoproject.com/en/6.0/topics/auth/
 ```
 
-After fetching, extract the key patterns and note any deprecation warnings or migration guidance.
+#### After fetching (both options)
+
+Extract the key patterns and note any deprecation warnings or migration guidance.
 
 When official sources conflict with each other (e.g. a migration guide contradicts the API reference), surface the discrepancy to the user and verify which pattern actually works against the detected version.
 
@@ -185,10 +222,10 @@ Honesty about what you couldn't verify is more valuable than false confidence.
 After implementing with source-driven development:
 
 - [ ] Framework and library versions were identified from the dependency file
-- [ ] Official documentation was fetched for framework-specific patterns
+- [ ] Context7 was used (`use context7`) OR WebFetch fetched the relevant docs page (not the homepage)
 - [ ] All sources are official documentation, not blog posts or training data
 - [ ] Code follows the patterns shown in the current version's documentation
-- [ ] Non-trivial decisions include source citations with full URLs
+- [ ] Non-trivial decisions include source citations with full URLs (or Context7 query logged)
 - [ ] No deprecated APIs are used (checked against migration guides)
 - [ ] Conflicts between docs and existing code were surfaced to the user
 - [ ] Anything that could not be verified is explicitly flagged as unverified
