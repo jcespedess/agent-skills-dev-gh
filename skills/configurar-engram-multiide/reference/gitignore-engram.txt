@@ -1,0 +1,5 @@
+# Engram — DB local; versionar config, manifest y chunks
+.engram/*.db
+.engram/*.db-shm
+.engram/*.db-wal
+.engram/state.json

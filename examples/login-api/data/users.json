@@ -1,0 +1,15 @@
+[
+  {
+    "_note": "Passwords en texto plano — solo para mock. En producción usar bcrypt/passlib.",
+    "id": 1,
+    "username": "admin",
+    "password": "admin123",
+    "name": "Administrador"
+  },
+  {
+    "id": 2,
+    "username": "demo",
+    "password": "devpass2024",
+    "name": "Usuario Demo"
+  }
+]

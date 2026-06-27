@@ -1,0 +1,145 @@
+---
+description: Uso proactivo de Engram MCP como memoria persistente entre sesiones (agent-skills-dev-gh).
+globs: "**/*"
+alwaysApply: false
+---
+
+# Engram — Memoria persistente
+
+Servidor MCP **engram** en **`.cursor/mcp.json`** de este repo (recomendado). Proyecto: **agent-skills-dev-gh** (`.engram/config.json`).
+
+> **Multi-root:** `alwaysApply: false` — esta rule aplica al trabajar archivos de **este** repo. Siempre usar `project: agent-skills-dev-gh` en tools Engram.
+
+## Visibilidad al ejecutar Engram (obligatorio)
+
+Antes de **cada** llamada MCP/CLI de Engram en la respuesta visible, incluir **una línea** en prosa (no sustituye la tool call):
+
+```
+🧠 **Engram · `<tool o comando>`** — `<qué hace en esta respuesta>` (proyecto: `agent-skills-dev-gh`)
+```
+
+Ejemplos:
+
+- `🧠 **Engram · mem_context** — Recuperando observaciones previas del proyecto (proyecto: agent-skills-dev-gh)`
+- `🧠 **Engram · mem_search** — Buscando historial sobre el módulo antes de editar (proyecto: agent-skills-dev-gh)`
+- `🧠 **Engram · mem_get_observation** — Leyendo contenido completo de la observación #N (proyecto: agent-skills-dev-gh)`
+- `🧠 **Engram · engram timeline** — Contexto cronológico alrededor de la observación #N (proyecto: agent-skills-dev-gh)`
+
+Herramientas/comandos que requieren este aviso: `mem_context`, `mem_search`, `mem_get_observation`, `mem_timeline`, `mem_save`, `mem_session_start`, `mem_session_end`, `mem_session_summary`, `mem_current_project`, `engram sync`, `engram sync --import`, `engram timeline`.
+
+Tras la tool, si hubo resultado útil, **una frase** opcional: qué encontró o qué guardó (sin volcar toda la memoria).
+
+## Cuándo `mem_save` (sin que lo pidan)
+
+- Decisión técnica o de arquitectura (con motivo)
+- Bug resuelto (causa + fix)
+- Convención o patrón acordado
+- Descubrimiento no obvio del código o dominio
+
+## Cuándo `mem_search` / `mem_context`
+
+- Al iniciar una tarea que pueda tener historial previo
+- Antes de cambiar un módulo ya tocado en sesiones anteriores
+- Siempre pasar `project: agent-skills-dev-gh` en `mem_search` / `mem_context`
+
+## Formato `mem_save`
+
+Título corto + contenido:
+
+```
+**What**: …
+**Why**: …
+**Where**: rutas/archivos
+**Learned**: … (opcional)
+```
+
+## Rutinas de jornada y consulta (skill `configurar-engram-multiide`)
+
+Definición canónica: skill **`configurar-engram-multiide`**, modos **G** (comenzar día), **H** (finalizar día) e **I** (consultar ID). Cuando el usuario lo pida, ejecutar **en orden** los pasos del modo correspondiente — no improvisar un flujo distinto.
+
+### Comenzar día (modo G)
+
+Frases: «comenzar el día», «iniciar sesión de trabajo», «arrancar con Engram».
+
+1. `mem_current_project` → confirmar `project: agent-skills-dev-gh`
+2. `mem_context` con `project: agent-skills-dev-gh`
+3. `mem_search` (1–3 queries según objetivo del día o módulos a tocar)
+4. Opcional con confirmación: `git pull` + `engram sync --import`
+5. Opcional: `mem_session_start`
+6. **Informe breve:** contexto reciente, decisiones relevantes, pendientes, sugerencia de foco
+
+Si MCP no verde o falta setup → sugerir `@configurar-engram-multiide` modo **B** o **A**.
+
+### Finalizar día (modo H)
+
+Frases: «finalizar el día», «cerrar sesión», «resumen de sesión engram».
+
+1. `mem_save` de decisiones importantes aún no guardadas (formato What/Why/Where)
+2. **`mem_session_summary`** con `project: agent-skills-dev-gh` — **obligatorio**
+3. Resumir al usuario: logros, pendientes, archivos clave (prosa, no dump crudo)
+4. Ofrecer sync Git (§ Sync abajo) — commit/push **solo** con confirmación
+5. Opcional: `mem_session_end`
+
+### Consultar observación por ID (modo I)
+
+Frases: «detalle memoria **#N**», «observación 76», «contenido completo ID 76», «contexto alrededor de #76», «qué pasó antes/después», «timeline engram N».
+
+1. Extraer **`N`** del mensaje (`#76`, `observación 76`, `ID 76`…)
+2. **Detalle / contenido / qué dice** → `mem_get_observation` con `{ "id": N }`
+3. **Contexto cronológico** (antes/después en la sesión) → terminal `engram timeline N [--before B] [--after A]` (perfil MCP `agent`) o `mem_timeline` si el servidor expone perfil `admin`
+4. **Informe breve:** resumen en prosa; no volcar JSON ni dumps largos salvo que lo pida
+
+No confundir con `mem_search` (por tema) ni `mem_context` (recientes sin ID fijo).
+
+## Reglas
+
+- No guardar secretos ni API keys
+- Modo **H** al cierre de jornada; `mem_session_summary` también válido en sesiones largas intra-día
+
+## Sync Git — exportar, commitear y push (ejecutable por el agente)
+
+Cuando el usuario pida **sincronizar Engram**, **subir chunks**, **commit/push de memorias** o confirme tras un `mem_save` importante, el agente **ejecuta** este flujo en la raíz de **este** repo (no solo lo documenta).
+
+### Cuándo ejecutarlo
+
+- Frases: «sync engram», «commit engram», «sube las memorias», «push chunks engram», «sincroniza y sube Engram».
+- Tras `mem_save` / `mem_session_summary` si el usuario pide compartir por Git.
+- Tras verificación modo B/C de `configurar-engram-multiide` con chunks pendientes en `git status .engram/`.
+
+Si no hay petición ni confirmación → **ofrecer** el flujo; **no** hacer commit/push sin que el usuario lo pida (salvo confirmación explícita en el mismo hilo).
+
+### Pasos (orden fijo)
+
+1. **`engram sync --status`** — comprobar si hay export pendiente.
+2. **`engram sync`** — desde la raíz del repo; si sale `Created chunk <id>`, habrá archivos nuevos en `.engram/chunks/`.
+3. **`git status .engram/`** — listar solo cambios bajo `.engram/`.
+4. **Staging acotado** (nunca `git add .` ni `git add .engram/*.db`):
+
+   ```bash
+   git add .engram/config.json .engram/manifest.json .engram/chunks/
+   ```
+
+   Incluir `config.json` solo si cambió. **No** añadir `*.db`, `*.db-shm`, `*.db-wal`, `state.json` (deben estar ignorados).
+
+5. **Commit** — Conventional Commits:
+
+   ```
+   chore(engram): sincronizar memorias del proyecto
+   ```
+
+6. **`git push origin <rama-actual>`** — solo si el usuario pidió subir/push o dijo «sí» al ofrecer push.
+
+7. **Informar** — chunks incluidos, hash del commit y si la rama quedó al día con `origin`.
+
+### Import en otra máquina (solo si el usuario lo pide)
+
+```bash
+git pull
+engram sync --import
+engram search "<término>"
+```
+
+### Qué no hacer
+
+- No commitear `.engram/*.db` ni secretos.
+- No hacer push a `main` con force.
