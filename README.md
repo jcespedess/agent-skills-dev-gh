@@ -31,7 +31,7 @@ Las skills codifican los flujos de trabajo, gates de calidad y buenas prácticas
 | Simplificar el código | `/code-simplify` | Claridad sobre ingenio |
 | Publicar a producción | `/ship` | Más rápido es más seguro |
 
-¿Querés menos pasos manuales una vez que existe el spec? **`/build auto`** genera el plan e implementa cada tarea en un único paso aprobado — aprobás el plan una vez y luego corre de forma autónoma. Elimina la intervención humana *entre* tareas, no la verificación: cada tarea sigue siendo conducida por tests y commiteada individualmente, y se pausa ante fallos o pasos riesgosos.
+¿Quieres menos pasos manuales una vez que existe el spec? **`/build auto`** genera el plan e implementa cada tarea en un único paso aprobado — apruebas el plan una vez y luego corre de forma autónoma. Elimina la intervención humana *entre* tareas, no la verificación: cada tarea sigue siendo conducida por tests y commiteada individualmente, y se pausa ante fallos o pasos riesgosos.
 
 Las skills también se activan automáticamente según lo que estés haciendo — diseñar una API dispara `api-and-interface-design`, construir UI dispara `frontend-ui-engineering`, y así sucesivamente.
 
@@ -62,7 +62,7 @@ Las skills también se activan automáticamente según lo que estés haciendo �
 /plugin install agent-skills@addy-agent-skills
 ```
 
-> **¿Errores SSH?** El marketplace clona repos vía SSH. Si no tenés claves SSH configuradas en GitHub, usá la URL HTTPS completa:
+> **¿Errores SSH?** El marketplace clona repos vía SSH. Si no tienes claves SSH configuradas en GitHub, usa la URL HTTPS completa:
 > ```bash
 > /plugin marketplace add https://github.com/addyosmani/agent-skills.git
 > /plugin install agent-skills@addy-agent-skills
@@ -80,14 +80,14 @@ claude --plugin-dir /ruta/a/agent-skills-dev-gh
 <details>
 <summary><b>Cursor</b></summary>
 
-Copiá cualquier `SKILL.md` en `.cursor/rules/`, o referenciá el directorio `skills/` completo. Ver [docs/cursor-setup.md](docs/cursor-setup.md).
+Copia cualquier `SKILL.md` en `.cursor/rules/`, o referencia el directorio `skills/` completo. Ver [docs/cursor-setup.md](docs/cursor-setup.md).
 
 </details>
 
 <details>
 <summary><b>Antigravity CLI</b></summary>
 
-Instalá como plugin nativo para skills, subagentes y slash commands. Ver [docs/antigravity-setup.md](docs/antigravity-setup.md).
+Instala como plugin nativo para skills, subagentes y slash commands. Ver [docs/antigravity-setup.md](docs/antigravity-setup.md).
 
 ```bash
 agy plugin install https://github.com/TU_USUARIO/agent-skills-dev-gh.git
@@ -98,7 +98,7 @@ agy plugin install https://github.com/TU_USUARIO/agent-skills-dev-gh.git
 <details>
 <summary><b>Gemini CLI</b></summary>
 
-Instalá como skills nativas para auto-descubrimiento, o agregá al `GEMINI.md` para contexto persistente. Ver [docs/gemini-cli-setup.md](docs/gemini-cli-setup.md).
+Instala como skills nativas para auto-descubrimiento, o agrega al `GEMINI.md` para contexto persistente. Ver [docs/gemini-cli-setup.md](docs/gemini-cli-setup.md).
 
 ```bash
 gemini skills install ./agent-skills-dev-gh/skills/
@@ -109,7 +109,7 @@ gemini skills install ./agent-skills-dev-gh/skills/
 <details>
 <summary><b>Windsurf</b></summary>
 
-Agregá el contenido de las skills a tu configuración de reglas de Windsurf. Ver [docs/windsurf-setup.md](docs/windsurf-setup.md).
+Agrega el contenido de las skills a tu configuración de reglas de Windsurf. Ver [docs/windsurf-setup.md](docs/windsurf-setup.md).
 
 </details>
 
@@ -123,7 +123,7 @@ Usa ejecución de skills basada en agentes vía AGENTS.md y la herramienta `skil
 <details>
 <summary><b>GitHub Copilot</b></summary>
 
-Usá las definiciones de agentes de `agents/` como personas de Copilot y el contenido de skills en `.github/copilot-instructions.md`. Ver [docs/copilot-setup.md](docs/copilot-setup.md).
+Usa las definiciones de agentes de `agents/` como personas de Copilot y el contenido de skills en `.github/copilot-instructions.md`. Ver [docs/copilot-setup.md](docs/copilot-setup.md).
 
 </details>
 
@@ -158,14 +158,14 @@ Los comandos anteriores son puntos de entrada. El pack incluye 32 skills en tota
 | Skill | Qué hace | Cuándo usarla |
 |-------|----------|---------------|
 | [interview-me](skills/interview-me/SKILL.md) | Entrevista de una pregunta a la vez que extrae lo que el usuario realmente quiere, hasta ~95% de confianza | El pedido es poco específico, o el usuario dice "entrevístame" |
-| [idea-refine](skills/idea-refine/SKILL.md) | Pensamiento divergente/convergente estructurado para convertir ideas vagas en propuestas concretas | Tenés un concepto rough que necesita exploración |
+| [idea-refine](skills/idea-refine/SKILL.md) | Pensamiento divergente/convergente estructurado para convertir ideas vagas en propuestas concretas | Tienes un concepto rough que necesita exploración |
 | [spec-driven-development](skills/spec-driven-development/SKILL.md) | Escribir un PRD cubriendo objetivos, comandos, estructura, estilo de código, testing y límites antes de cualquier código | Iniciando un proyecto, feature o cambio significativo |
 
 ### Planificar — Descomponer
 
 | Skill | Qué hace | Cuándo usarla |
 |-------|----------|---------------|
-| [planning-and-task-breakdown](skills/planning-and-task-breakdown/SKILL.md) | Descomponer specs en tareas pequeñas y verificables con criterios de aceptación y ordenamiento de dependencias | Tenés un spec y necesitás unidades implementables |
+| [planning-and-task-breakdown](skills/planning-and-task-breakdown/SKILL.md) | Descomponer specs en tareas pequeñas y verificables con criterios de aceptación y ordenamiento de dependencias | Tienes un spec y necesitas unidades implementables |
 
 ### Construir — Escribir el código
 
@@ -174,7 +174,7 @@ Los comandos anteriores son puntos de entrada. El pack incluye 32 skills en tota
 | [incremental-implementation](skills/incremental-implementation/SKILL.md) | Slices verticales delgados — implementar, testear, verificar, commitear. Feature flags, defaults seguros, cambios con rollback | Cualquier cambio que toque más de un archivo |
 | [test-driven-development](skills/test-driven-development/SKILL.md) | Red-Green-Refactor, pirámide de tests (80/15/5), tamaños de test, DAMP sobre DRY, Regla de Beyoncé, testing en browser | Implementando lógica, corrigiendo bugs o cambiando comportamiento |
 | [context-engineering](skills/context-engineering/SKILL.md) | Darle al agente la información correcta en el momento correcto — rules files, empaquetado de contexto, integraciones MCP | Al iniciar una sesión, cambiar de tarea o cuando cae la calidad del output |
-| [source-driven-development](skills/source-driven-development/SKILL.md) | Basar cada decisión de framework en documentación oficial — verificar, citar fuentes, marcar lo no verificado | Querés código autorizado con fuentes citadas para cualquier framework |
+| [source-driven-development](skills/source-driven-development/SKILL.md) | Basar cada decisión de framework en documentación oficial — verificar, citar fuentes, marcar lo no verificado | Quieres código autorizado con fuentes citadas para cualquier framework |
 | [doubt-driven-development](skills/doubt-driven-development/SKILL.md) | Revisión adversarial en contexto fresco de cada decisión no trivial — CLAIM → EXTRACT → DOUBT → RECONCILE → STOP | El riesgo es alto (producción, seguridad, irreversible) o el código es desconocido |
 | [frontend-ui-engineering](skills/frontend-ui-engineering/SKILL.md) | Arquitectura de componentes, design systems, gestión de estado, diseño responsivo, accesibilidad WCAG 2.1 AA | Construyendo o modificando interfaces de usuario |
 | [api-and-interface-design](skills/api-and-interface-design/SKILL.md) | Diseño contract-first, Ley de Hyrum, Regla de Una Versión, semántica de errores, validación de límites | Diseñando APIs, límites de módulos o interfaces públicas |
@@ -211,7 +211,7 @@ Los comandos anteriores son puntos de entrada. El pack incluye 32 skills en tota
 | [code-review-and-quality](skills/code-review-and-quality/SKILL.md) | Revisión en cinco ejes, tamaño de cambio (~100 líneas), etiquetas de severidad (Nit/Opcional/FYI), normas de velocidad | Antes de mergear cualquier cambio |
 | [code-simplification](skills/code-simplification/SKILL.md) | Valla de Chesterton, Regla de 500, reducir complejidad preservando el comportamiento exacto | El código funciona pero es más difícil de leer o mantener de lo necesario |
 | [security-and-hardening](skills/security-and-hardening/SKILL.md) | Prevención OWASP Top 10, patrones de auth, gestión de secretos, auditoría de dependencias, sistema de tres niveles | Manejando input de usuario, auth, almacenamiento de datos o integraciones externas |
-| [performance-optimization](skills/performance-optimization/SKILL.md) | Enfoque measure-first — objetivos de Core Web Vitals, flujos de profiling, análisis de bundle, detección de anti-patrones | Existen requisitos de rendimiento o sospechás regresiones |
+| [performance-optimization](skills/performance-optimization/SKILL.md) | Enfoque measure-first — objetivos de Core Web Vitals, flujos de profiling, análisis de bundle, detección de anti-patrones | Existen requisitos de rendimiento o sospechas regresiones |
 
 ### Publicar — Deploy con confianza
 
@@ -355,4 +355,4 @@ Ver [docs/skill-anatomy.md](docs/skill-anatomy.md) para la especificación de fo
 
 ## Licencia
 
-MIT — usá estas skills en tus proyectos, equipos y herramientas.
+MIT — usa estas skills en tus proyectos, equipos y herramientas.
